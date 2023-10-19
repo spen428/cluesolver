@@ -4,7 +4,6 @@ import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.image.ImageView
 import javafx.scene.text.Text
 import javafx.scene.web.WebEvent
 import javafx.scene.web.WebView
