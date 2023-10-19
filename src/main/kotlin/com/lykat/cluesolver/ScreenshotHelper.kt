@@ -45,7 +45,7 @@ fun triggerPasteInWebView(webView: WebView, data: String) {
         webView.engine.executeScript(
             """
 (() => {
-    pasteEvent = new Event('paste', {
+    const pasteEvent = new Event('paste', {
         bubbles: true,
         cancelable: true
     });
@@ -54,19 +54,19 @@ fun triggerPasteInWebView(webView: WebView, data: String) {
             type: 'image/png',
             kind: 'file',
             getAsFile: () => {
-                var dataUri = '$data';
-                var byteString = atob(dataUri.split(',')[1]);
-                var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
-                var buffer = new Uint8Array(byteString.length);
-                for (var i = 0; i < byteString.length; i++) {
+                const dataUri = '$data';
+                const byteString = atob(dataUri.split(',')[1]);
+                const mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+                const buffer = new Uint8Array(byteString.length);
+                for (let i = 0; i < byteString.length; i++) {
                     buffer[i] = byteString.charCodeAt(i);
                 }
-                var blob = new Blob([buffer], {type: mimeString});
-                return blob;
+                return new Blob([buffer], {type: mimeString});
             }
         } ]
     }
-    document.querySelector(".forcehidden").onpaste(pasteEvent);
+    const pasteEventListener = document.querySelector(".forcehidden");
+    if (pasteEventListener) pasteEventListener.onpaste(pasteEvent);
 })();
 """
         )

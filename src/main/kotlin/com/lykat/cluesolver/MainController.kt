@@ -21,12 +21,19 @@ class MainController {
     @FXML
     lateinit var sliderPuzzleInstructionsView: Text
 
+    @FXML
+    lateinit var coordinateView: WebView
+
     fun initialize() {
         setupGlobalKeyListener(this)
         setupClipboardListener()
         webView.engine.onAlert = EventHandler<WebEvent<String>> { event ->
             println(event.data)
+            if (event.data.contains("degrees")) {
+                updateCoordinateView(event.data)
+            }
         }
+        webView.engine.load("https://runeapps.org/apps/clue/")
         webView.engine.loadWorker.stateProperty().addListener { _, _, newState ->
             if (newState == Worker.State.SUCCEEDED) {
                 webView.engine.executeScript(
@@ -44,7 +51,43 @@ class MainController {
                 )
             }
         }
-        webView.engine.load("https://runeapps.org/apps/clue/")
+        coordinateView.engine.loadContent("<html><body><p>Coordinate clue solutions will appear here</p></body></html>")
+    }
+
+    private fun updateCoordinateView(data: String) {
+        val regex = Regex("LOG: (\\d+) degrees (\\d+) minutes (north|south) (\\d+) degrees (\\d+) minutes (east|west)")
+        val matchEntire = regex.matchEntire(data)
+        if (matchEntire == null) return
+        val values = matchEntire.groupValues
+        coordinateView.engine.executeScript(
+            """
+(() => {
+    var xhr = new XMLHttpRequest();
+    var url = "https://runescape.wiki/api.php";
+    
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    xhr.onreadystatechange = () => {
+        console.log(xhr.status);
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            var jsonResponse = JSON.parse(xhr.responseText);
+            if (jsonResponse && jsonResponse.parse && jsonResponse.parse.text) {
+                const html = jsonResponse.parse.text["*"]
+                    .replace('href="/', 'href="https://runescape.wiki/')
+                    .replace('src="/', 'src="https://runescape.wiki/')
+                    .replace('srcset="/', 'srcset="https://runescape.wiki/')
+                document.body.innerHTML = html;
+            }
+        }
+    };
+    
+    var text = "&text=%7B%7BCoordinate%7Cdegree1%3D${values[1]}%7Cminute1%3D${values[2]}%7Cdirection1%3D${values[3]}%7Cdegree2%3D${values[4]}%7Cminute2%3D${values[5]}%7Cdirection2%3D${values[6]}%7D%7D";
+    var data = "action=parse&prop=text%7Climitreportdata&title=Calculator%3ATreasure_Trails%2FGuide%2FLocate&disablelimitreport=true&contentmodel=wikitext&format=json" + text;
+    xhr.send(data);
+})();
+"""
+        )
     }
 
     private fun setupClipboardListener() {

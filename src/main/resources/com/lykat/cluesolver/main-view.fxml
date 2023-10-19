@@ -7,4 +7,5 @@
       fx:controller="com.lykat.cluesolver.MainController">
     <WebView fx:id="webView" prefHeight="500" prefWidth="500"/>
     <Text fx:id="sliderPuzzleInstructionsView" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+    <WebView fx:id="coordinateView" prefHeight="200" prefWidth="500"/>
 </VBox>
