@@ -5,6 +5,8 @@ import org.jnativehook.GlobalScreen
 import org.jnativehook.keyboard.NativeKeyEvent
 import org.jnativehook.keyboard.NativeKeyListener
 import java.awt.Rectangle
+import java.awt.Toolkit
+import java.awt.datatransfer.Transferable
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -43,9 +45,10 @@ fun setupGlobalKeyListener(webView: WebView) {
 
         private fun handleAlt1() {
             println("handleAlt1")
-            val screenshot = captureScreen(Rectangle(1920, 0, 1920, 1080))
+            val screenshot = captureScreen(Rectangle(1920 + 520, 280, 950, 530))
             setImageToClipboard(screenshot)
-            triggerPasteInWebView(webView)
+            val data = imageToDataURI(screenshot, "png")
+            triggerPasteInWebView(webView, data)
         }
     }
 

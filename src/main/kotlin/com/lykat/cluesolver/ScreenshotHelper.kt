@@ -39,9 +39,35 @@ fun captureScreen(rect: Rectangle): BufferedImage {
     return robot.createScreenCapture(rect)
 }
 
-fun triggerPasteInWebView(webView: WebView) {
+fun triggerPasteInWebView(webView: WebView, data: String) {
     javafx.application.Platform.runLater {
-        webView.engine.executeScript("document.dispatchEvent(new Event('paste'));")
+        //language=JavaScript
+        webView.engine.executeScript(
+            """
+pasteEvent = new Event('paste', {
+    bubbles: true,
+    cancelable: true
+});
+pasteEvent.clipboardData = {
+    items: [ {
+        type: 'image/png',
+        kind: 'file',
+        getAsFile: () => {
+            var dataUri = '$data';
+            var byteString = atob(dataUri.split(',')[1]);
+            var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+            var buffer = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                buffer[i] = byteString.charCodeAt(i);
+            }
+            var blob = new Blob([buffer], {type: mimeString});
+            return blob;
+        }
+    } ]
+}
+document.querySelector(".forcehidden").onpaste(pasteEvent);
+"""
+        )
     }
 }
 
