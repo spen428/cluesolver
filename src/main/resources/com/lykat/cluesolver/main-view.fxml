@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.image.ImageView?>
+<VBox alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lykat.cluesolver.MainController">
+    <WebView fx:id="webView" prefHeight="500" prefWidth="500"/>
+    <ImageView fx:id="imageView" fitWidth="500" fitHeight="281.25" preserveRatio="true"/>
+</VBox>
