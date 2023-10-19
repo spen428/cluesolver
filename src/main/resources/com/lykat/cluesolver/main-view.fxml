@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
@@ -8,5 +7,4 @@
       fx:controller="com.lykat.cluesolver.MainController">
     <WebView fx:id="webView" prefHeight="500" prefWidth="500"/>
     <Text fx:id="sliderPuzzleInstructionsView" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
-    <ImageView fx:id="imageView" fitWidth="500" fitHeight="281.25" preserveRatio="true"/>
 </VBox>

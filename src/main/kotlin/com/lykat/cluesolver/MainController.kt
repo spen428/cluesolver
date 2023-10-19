@@ -5,7 +5,6 @@ import javafx.concurrent.Worker
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.image.ImageView
-import javafx.scene.input.Clipboard
 import javafx.scene.text.Text
 import javafx.scene.web.WebEvent
 import javafx.scene.web.WebView
@@ -23,12 +22,9 @@ class MainController {
     @FXML
     lateinit var sliderPuzzleInstructionsView: Text
 
-    @FXML
-    lateinit var imageView: ImageView
-
     fun initialize() {
         setupGlobalKeyListener(this)
-        setupClipboardListener(imageView)
+        setupClipboardListener()
         webView.engine.onAlert = EventHandler<WebEvent<String>> { event ->
             println(event.data)
         }
@@ -52,23 +48,15 @@ class MainController {
         webView.engine.load("https://runeapps.org/apps/clue/")
     }
 
-    private fun setupClipboardListener(imageView: ImageView) {
+    private fun setupClipboardListener() {
         val timer = Timer(true)
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 Platform.runLater {
-                    checkClipboardForImageAndUpdate(imageView)
                     checkForSliderInstructions(webView)
                 }
             }
         }, 0, 1000)
-    }
-
-    private fun checkClipboardForImageAndUpdate(imageView: ImageView) {
-        val clipboard = Clipboard.getSystemClipboard()
-        if (clipboard.hasImage()) {
-            imageView.image = clipboard.image
-        }
     }
 
     private fun checkForSliderInstructions(webView: WebView) {
