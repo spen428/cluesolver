@@ -6,6 +6,7 @@ module com.lykat.cluesolver {
     requires jnativehook;
     requires java.logging;
     requires java.desktop;
+    requires annotations;
 
 
     opens com.lykat.cluesolver to javafx.fxml;
