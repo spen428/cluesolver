@@ -1,5 +1,6 @@
 package com.lykat.cluesolver
 
+import javafx.application.Platform
 import javafx.scene.web.WebView
 import java.awt.Rectangle
 import java.awt.Robot
@@ -40,7 +41,7 @@ fun captureScreen(rect: Rectangle): BufferedImage {
 }
 
 fun triggerPasteInWebView(webView: WebView, data: String) {
-    javafx.application.Platform.runLater {
+    Platform.runLater {
         //language=JavaScript
         webView.engine.executeScript(
             """

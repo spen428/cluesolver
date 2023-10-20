@@ -95,15 +95,19 @@ class MainController {
     }
 
     fun updateInstructionsView() {
+
         val subList = if (this.instructionList.size >= 14) this.instructionList.subList(0, 14) else this.instructionList
-        this.sliderPuzzleInstructionsView.text = subList.joinToString(" ") {
+        val instructionText = "${this.instructionList.size} moves: " + subList.joinToString(" ") {
             when (it) {
-                "up" -> "↑"
-                "down" -> "↓"
-                "left" -> "←"
-                "right" -> "→"
+                "up" -> "🡅"
+                "down" -> "🡇"
+                "left" -> "🡄"
+                "right" -> "🡆"
                 else -> it
             }
+        }
+        Platform.runLater {
+            this.sliderPuzzleInstructionsView.text = instructionText
         }
     }
 }
