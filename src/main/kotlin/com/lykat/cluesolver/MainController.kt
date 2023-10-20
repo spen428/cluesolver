@@ -4,7 +4,7 @@ import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.text.Text
+import javafx.scene.control.Label
 import javafx.scene.web.WebEvent
 import javafx.scene.web.WebView
 import java.util.*
@@ -19,7 +19,7 @@ class MainController {
     lateinit var webView: WebView
 
     @FXML
-    lateinit var sliderPuzzleInstructionsView: Text
+    lateinit var sliderPuzzleInstructionsView: Label
 
     fun initialize() {
         setupGlobalKeyListener(this)
