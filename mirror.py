@@ -40,13 +40,13 @@ def serve_file(path: str):
 
 def _serve_content(file_path: str):
     if file_path.endswith(".webp"):
-        return _convert_to_png_and_serve(file_path)
+        return _serve_webp_as_png(file_path)
     if file_path.endswith(".js"):
         return _update_urls_and_serve(file_path)
     return static_file(file_path, root=".")
 
 
-def _update_urls_and_serve(file_path):
+def _update_urls_and_serve(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     modified_content = content.replace("https://runeapps.org", "")
@@ -54,13 +54,12 @@ def _update_urls_and_serve(file_path):
     return modified_content
 
 
-def _convert_to_png_and_serve(file_path):
-    with Image.open(file_path) as img:
-        byte_data = io.BytesIO()
-        img.save(byte_data, 'PNG')
-        byte_data.seek(0)
-        response.content_type = 'image/png'
-        return byte_data.getvalue()
+def _serve_webp_as_png(webp_path: str):
+    png_path = webp_path.replace(".webp", ".png")
+    if not os.path.exists(png_path):
+        with Image.open(webp_path) as img:
+            img.save(png_path, 'PNG')
+    return _serve_content(png_path)
 
 
 def _download_file_if_not_exists(path: str, file_path: str):

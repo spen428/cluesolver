@@ -14,7 +14,7 @@ class Main : Application() {
         stage.isAlwaysOnTop = true
         stage.maxWidth = 500.0
         stage.maxHeight = 550.0
-        stage.x = 1920.0
+        stage.x = 0.0
         stage.y = 0.0
         stage.opacity = 0.75
         stage.show()

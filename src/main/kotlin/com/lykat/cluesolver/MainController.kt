@@ -36,7 +36,7 @@ class MainController {
 
     private fun setupLocalStorage() {
         val mapSettings =
-            "{\"jewelry\":{\"glory\":\"pota-red-0\",\"cbbrace\":\"pota-red-2\",\"digpendant\":\"pota-purple-2\",\"enlightened\":\"pota-red-4\",\"games\":\"pota-red-1\",\"duel\":\"pota-purple-0\",\"respawn\":\"pota-purple-1\",\"skneck\":\"pota-red-3\",\"travellers\":\"pota-red-5\"},\"fairyrings\":[\"BKP\",\"DIS\",\"AJR\",\"ALQ\",\"AKS\",\"ALP\",\"CKS\",\"CJS\",\"CKR\",\"\"],\"toggles\":{\"varrock\":\"default\",\"yanille\":\"yanille\",\"camelot\":\"default\",\"sent\":\"none\",\"arch\":\"none\"},\"hideTeleports\":false,\"mapmode\":\"3d\",\"extmenu\":true,\"enablePota\":true,\"enableFairy\":true}"
+            "{\"jewelry\":{\"glory\":\"pota-red-0\",\"cbbrace\":\"pota-red-2\",\"digpendant\":\"pota-purple-2\",\"enlightened\":\"pota-red-4\",\"games\":\"pota-red-1\",\"duel\":\"pota-purple-0\",\"respawn\":\"pota-purple-1\",\"skneck\":\"pota-red-3\",\"travellers\":\"pota-red-5\"},\"fairyrings\":[\"BKP\",\"DIS\",\"AJR\",\"ALQ\",\"AKS\",\"ALP\",\"CKS\",\"CJS\",\"CKR\",\"BKR\"],\"toggles\":{\"varrock\":\"default\",\"yanille\":\"yanille\",\"camelot\":\"default\",\"sent\":\"none\",\"arch\":\"none\"},\"hideTeleports\":false,\"mapmode\":\"3d\",\"extmenu\":true,\"enablePota\":true,\"enableFairy\":true}"
         webView.engine.executeScript("localStorage.setItem('map_settings', '$mapSettings')")
     }
 
