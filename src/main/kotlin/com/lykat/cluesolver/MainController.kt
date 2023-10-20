@@ -7,7 +7,6 @@ import javafx.fxml.FXML
 import javafx.scene.text.Text
 import javafx.scene.web.WebEvent
 import javafx.scene.web.WebView
-import org.intellij.lang.annotations.Language
 import java.util.*
 import kotlin.collections.ArrayDeque
 
@@ -22,74 +21,38 @@ class MainController {
     @FXML
     lateinit var sliderPuzzleInstructionsView: Text
 
-    @FXML
-    lateinit var coordinateView: WebView
-
     fun initialize() {
         setupGlobalKeyListener(this)
         setupClipboardListener()
-        webView.engine.onAlert = EventHandler<WebEvent<String>> { event ->
-            if (event.data.startsWith("LOG: ") && event.data.contains("degrees")) {
-                updateCoordinateView(event.data.substring(5))
-            }
-        }
+        webView.engine.onAlert = EventHandler<WebEvent<String>> { event -> println(event.data) }
         webView.engine.load("http://localhost:8811")
         webView.engine.loadWorker.stateProperty().addListener { _, _, newState ->
             if (newState == Worker.State.SUCCEEDED) {
-                webView.engine.executeScript(
-                    """
-            console.log = function(message) {
-                window.alert('LOG: ' + message);
-            };
-            console.warn = function(message) {
-                window.alert('WARN: ' + message);
-            };
-            console.error = function(message) {
-                window.alert('ERROR: ' + message);
-            };
-        """
-                )
-                val mapSettings =
-                    "{\"jewelry\":{\"glory\":\"pota-red-0\",\"cbbrace\":\"pota-red-2\",\"digpendant\":\"pota-purple-2\",\"enlightened\":\"pota-red-4\",\"games\":\"pota-red-1\",\"duel\":\"pota-purple-0\",\"respawn\":\"pota-purple-1\",\"skneck\":\"pota-red-3\",\"travellers\":\"pota-red-5\"},\"fairyrings\":[\"BKP\",\"DIS\",\"AJR\",\"ALQ\",\"AKS\",\"ALP\",\"CKS\",\"CJS\",\"CKR\",\"\"],\"toggles\":{\"varrock\":\"default\",\"yanille\":\"yanille\",\"camelot\":\"default\",\"sent\":\"none\",\"arch\":\"none\"},\"hideTeleports\":false,\"mapmode\":\"3d\",\"extmenu\":true,\"enablePota\":true,\"enableFairy\":true}"
-                webView.engine.executeScript("localStorage.setItem('map_settings', '$mapSettings')")
+                setupAlertForConsoleOutput()
+                setupLocalStorage()
             }
         }
-
-        coordinateView.engine.loadContent("<html><body><p>Coordinate clue solutions will appear here</p></body></html>")
     }
 
-    private fun updateCoordinateView(data: String) {
-        val regex = Regex("(\\d+) degrees (\\d+) minutes (north|south) (\\d+) degrees (\\d+) minutes (east|west)")
-        val matchEntire = regex.matchEntire(data) ?: return
-        val values = matchEntire.groupValues
-        coordinateView.engine.executeScript(
+    private fun setupLocalStorage() {
+        val mapSettings =
+            "{\"jewelry\":{\"glory\":\"pota-red-0\",\"cbbrace\":\"pota-red-2\",\"digpendant\":\"pota-purple-2\",\"enlightened\":\"pota-red-4\",\"games\":\"pota-red-1\",\"duel\":\"pota-purple-0\",\"respawn\":\"pota-purple-1\",\"skneck\":\"pota-red-3\",\"travellers\":\"pota-red-5\"},\"fairyrings\":[\"BKP\",\"DIS\",\"AJR\",\"ALQ\",\"AKS\",\"ALP\",\"CKS\",\"CJS\",\"CKR\",\"\"],\"toggles\":{\"varrock\":\"default\",\"yanille\":\"yanille\",\"camelot\":\"default\",\"sent\":\"none\",\"arch\":\"none\"},\"hideTeleports\":false,\"mapmode\":\"3d\",\"extmenu\":true,\"enablePota\":true,\"enableFairy\":true}"
+        webView.engine.executeScript("localStorage.setItem('map_settings', '$mapSettings')")
+    }
+
+    private fun setupAlertForConsoleOutput() {
+        webView.engine.executeScript(
             """
-(() => {
-    var xhr = new XMLHttpRequest();
-    var url = "https://runescape.wiki/api.php";
-    
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    
-    xhr.onreadystatechange = () => {
-        console.log(xhr.status);
-        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-            var jsonResponse = JSON.parse(xhr.responseText);
-            if (jsonResponse && jsonResponse.parse && jsonResponse.parse.text) {
-                const html = jsonResponse.parse.text["*"]
-                    .replace('href="/', 'href="https://runescape.wiki/')
-                    .replace('src="/', 'src="https://runescape.wiki/')
-                    .replace('srcset="/', 'srcset="https://runescape.wiki/')
-                document.body.innerHTML = html;
-            }
-        }
-    };
-    
-    var text = "&text=%7B%7BCoordinate%7Cdegree1%3D${values[1]}%7Cminute1%3D${values[2]}%7Cdirection1%3D${values[3]}%7Cdegree2%3D${values[4]}%7Cminute2%3D${values[5]}%7Cdirection2%3D${values[6]}%7D%7D";
-    var data = "action=parse&prop=text%7Climitreportdata&title=Calculator%3ATreasure_Trails%2FGuide%2FLocate&disablelimitreport=true&contentmodel=wikitext&format=json" + text;
-    xhr.send(data);
-})();
-"""
+                console.log = function(message) {
+                    window.alert('LOG: ' + message);
+                };
+                console.warn = function(message) {
+                    window.alert('WARN: ' + message);
+                };
+                console.error = function(message) {
+                    window.alert('ERROR: ' + message);
+                };
+            """
         )
     }
 

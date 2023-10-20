@@ -8,12 +8,12 @@ import javafx.stage.Stage
 class Main : Application() {
     override fun start(stage: Stage) {
         val fxmlLoader = FXMLLoader(Main::class.java.getResource("main-view.fxml"))
-        val scene = Scene(fxmlLoader.load(), 500.0, 750.0)
+        val scene = Scene(fxmlLoader.load(), 500.0, 550.0)
         stage.title = "Clue Solver for RuneScape"
         stage.scene = scene
         stage.isAlwaysOnTop = true
         stage.maxWidth = 500.0
-        stage.maxHeight = 750.0
+        stage.maxHeight = 550.0
         stage.x = 1920.0
         stage.y = 0.0
         stage.opacity = 0.75

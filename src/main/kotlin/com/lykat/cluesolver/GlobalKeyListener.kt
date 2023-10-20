@@ -49,7 +49,6 @@ fun setupGlobalKeyListener(mainController: MainController) {
         }
 
         private fun handleAlt1() {
-            println("handleAlt1")
             val screenshot = captureScreen(Rectangle(1920 + 520, 280, 950, 530))
             setImageToClipboard(screenshot)
             val data = imageToDataURI(screenshot, "png")
