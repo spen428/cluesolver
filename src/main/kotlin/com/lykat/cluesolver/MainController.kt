@@ -28,12 +28,11 @@ class MainController {
         setupGlobalKeyListener(this)
         setupClipboardListener()
         webView.engine.onAlert = EventHandler<WebEvent<String>> { event ->
-            println(event.data)
-            if (event.data.contains("degrees")) {
-                updateCoordinateView(event.data)
+            if (event.data.startsWith("LOG: ") && event.data.contains("degrees")) {
+                updateCoordinateView(event.data.substring(5))
             }
         }
-        webView.engine.load("https://runeapps.org/apps/clue/")
+        webView.engine.load("http://localhost:8811")
         webView.engine.loadWorker.stateProperty().addListener { _, _, newState ->
             if (newState == Worker.State.SUCCEEDED) {
                 webView.engine.executeScript(
@@ -55,9 +54,8 @@ class MainController {
     }
 
     private fun updateCoordinateView(data: String) {
-        val regex = Regex("LOG: (\\d+) degrees (\\d+) minutes (north|south) (\\d+) degrees (\\d+) minutes (east|west)")
-        val matchEntire = regex.matchEntire(data)
-        if (matchEntire == null) return
+        val regex = Regex("(\\d+) degrees (\\d+) minutes (north|south) (\\d+) degrees (\\d+) minutes (east|west)")
+        val matchEntire = regex.matchEntire(data) ?: return
         val values = matchEntire.groupValues
         coordinateView.engine.executeScript(
             """
